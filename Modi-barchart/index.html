@@ -3,6 +3,8 @@
 
 <head>
 <meta charset="utf-8">
+<script src='http://d3js.org/d3.v2.min.js'></script>
+<script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <style>
 
 body {
@@ -59,16 +61,31 @@ body {
 </head>
 
 <body>
-  Bar Chart for Hot Words for Visual Politics
+<h1>Bar Chart for Hot Words for Visual Politics</h1> 
+
+<p style="margin-top:50px;">
+    <label for="slider1" 
+      style="display: inline-block; width: 500px; text-align: right">
+      MONTH = <span id="slider1-value">…</span>
+    </label>
+    <input type="range" min="1" max="15" step="1" id="slider1">
+</p>
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
 <script>
 
-var margin = {top: 40, right: 20, bottom: 30, left: 40},
+var margin = {top: 40, right: 20, bottom: 30, left: 100},
     width = 960 - margin.left - margin.right,
-    height = 2000 - margin.top - margin.bottom;
+    height = 700 - margin.top - margin.bottom;
 
 // var formatPercent = d3.format(".0%");
+
+var svg = d3.select("body").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var y = d3.scale.ordinal()
     // .domain(data.map(function(d) {return d.letter;}))
@@ -90,64 +107,102 @@ var yAxis = d3.svg.axis()
     .orient("left");
     // .tickFormat(formatPercent);
 
-var tip = d3.tip()
-  .attr('class', 'd3-tip')
-  .offset([-10, 0])
-  .html(function(d) {
-    return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
-  })
 
-var svg = d3.select("body").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg.call(tip);
 
-d3.tsv("data.tsv", type, function(error, data) {
-  x.domain([5000, d3.max(data, function(d) { return d.frequency; })]);
-  y.domain(data.map(function(d) { return d.letter; }));
+function drawB(h) {
+//array
+// file[1]="data1.tsv"
+// file[2]="data2.tsv"
+// file[3]="data3.tsv"
+// file[4]="data4.tsv"
 
-  svg.append("g")
-      .attr("class", "x axis")
-      .call(xAxis)
-      .append("text")
-      .attr("transform", "translate(" + width + ",20)")
-      .attr("x", 6)
-      .attr("dx", ".71em")
-      .style("text-anchor", "end")
-      .text("Frequency");
 
-  svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-    // .append("text")
-    //   .attr("transform", "rotate(-90)")
-    //   .attr("y", 6)
-    //   .attr("dy", ".71em")
-    //   .style("text-anchor", "end")
-      // .text("letter");
 
-  svg.selectAll(".bar")
-      .data(data)
-    .enter().append("rect")
-      .attr("class", "bar")
-      .attr("x", function(d) { return 0; })
-      .attr("y", function(d) { return y(d.letter); })
-      .attr("height", y.rangeBand())
-      .attr("width", function(d) { return x(d.frequency); })
-      .on('mouseover', tip.show)
-      .on('mouseout', tip.hide)
+    svg.selectAll("*").remove();
 
-});
+    var tip = d3.tip()
+      .attr('class', 'd3-tip')
+      .offset([-10, 0])
+      .html(function(d) {
+        return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+      });
 
-function type(d) {
-  d.frequency = +d.frequency;
-  return d;
-}
+
+    svg.call(tip);
+
+    //file[h] go into the file
+
+    d3.tsv("data.tsv", type, function(error, data) {
+      x.domain([5000, d3.max(data, function(d) { return d.frequency; })]);
+      y.domain(data.map(function(d) { return d.letter; }));
+
+      svg.append("g")
+          .attr("class", "x axis")
+          .call(xAxis)
+          .append("text")
+          .attr("transform", "translate(" + width + ",20)")
+          .attr("x", 6)
+          .attr("dx", ".71em")
+          .style("text-anchor", "end")
+          .text("Frequency");
+
+      svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+        // .append("text")
+        //   .attr("transform", "rotate(-90)")
+        //   .attr("y", 6)
+        //   .attr("dy", ".71em")
+        //   .style("text-anchor", "end")
+          // .text("letter");
+
+      svg.selectAll(".bar")
+          .data(data)
+        .enter().append("rect")
+          .attr("class", "bar")
+          .attr("x", function(d) { return 0; })
+          .attr("y", function(d) { return y(d.letter); })
+          .attr("height", y.rangeBand())
+          .attr("width", function(d) { return x(d.frequency); })
+          .on('mouseover', tip.show)
+          .on('mouseout', tip.hide)
+
+    });
+
+    function type(d) {
+      d.frequency = +d.frequency;
+      return d;
+    }
+
+} //drawB function
 
 </script>
+
+
+<script>
+
+    // when the input range changes update  
+    d3.select("#slider1").on("input", function() {
+      update1(+this.value);
+      
+      drawB(+this.value);
+      
+    });
+
+    // Initial starting radius of the circle 
+    update1(1);
+    
+    drawB(1);
+    
+
+    // update the elements
+    function update1(sliderval) {
+      // adjust the text on the range slider
+      d3.select("#slider1-value").text(sliderval);
+      d3.select("#slider1").property("value", sliderval);
+    }
+    </script>
 
 </body>
 </html>
