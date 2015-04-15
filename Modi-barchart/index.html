@@ -134,6 +134,10 @@ function drawB(h) {
     //file[h] go into the file
 
     d3.tsv("data.tsv", type, function(error, data) {
+	  console.log(type(data));
+	  data.sort(function(obj1,obj2){
+		return obj2.frequency - obj1.frequency;
+	  });
       x.domain([5000, d3.max(data, function(d) { return d.frequency; })]);
       y.domain(data.map(function(d) { return d.letter; }));
 
