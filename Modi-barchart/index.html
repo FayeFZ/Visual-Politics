@@ -107,7 +107,7 @@ var yAxis = d3.svg.axis()
     .orient("left");
     // .tickFormat(formatPercent);
 
-var file =["data1.tsv","data2.tsv","data3.tsv","data4.tsv","data5.tsv","data6.tsv","data7.tsv","data8.tsv","data9.tsv","data10.tsv","data11.tsv","data12.tsv","data13.tsv","data14.tsv","data15.tsv","data16.tsv","data17.tsv","data18.tsv","data19.tsv","data20.tsv","data21.tsv","data22.tsv""data23.tsv""data24.tsv"];
+var file =["data1.tsv","data2.tsv","data3.tsv","data4.tsv","data5.tsv","data6.tsv","data7.tsv","data8.tsv","data9.tsv","data10.tsv","data11.tsv","data12.tsv","data13.tsv","data14.tsv","data15.tsv","data16.tsv","data17.tsv","data18.tsv","data19.tsv","data20.tsv","data21.tsv","data22.tsv","data23.tsv","data24.tsv"];
 
 
 
@@ -130,9 +130,8 @@ function drawB(h) {
 
     //file[h] go into the file
 
-    var j=h-1;
 
-    d3.tsv( file[j], type, function(error, data) {
+    d3.tsv(file[h-1], type, function(error, data) {
       x.domain([5000, d3.max(data, function(d) { return d.frequency; })]);
       y.domain(data.map(function(d) { return d.letter; }));
 
