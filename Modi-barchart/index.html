@@ -134,7 +134,7 @@ function drawB(h) {
     //file[h] go into the file
 
     d3.tsv("data.tsv", type, function(error, data) {
-	  console.log(type(data));
+
 	  data.sort(function(obj1,obj2){
 		return obj2.frequency - obj1.frequency;
 	  });
