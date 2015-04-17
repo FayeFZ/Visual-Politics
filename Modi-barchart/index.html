@@ -76,7 +76,7 @@ body {
 <script>
 
 var margin = {top: 40, right: 20, bottom: 30, left: 100},
-    width = 960 - margin.left - margin.right,
+    width = 1200 - margin.left - margin.right,
     height = 700 - margin.top - margin.bottom;
 
 // var formatPercent = d3.format(".0%");
@@ -98,19 +98,24 @@ var y = d3.scale.ordinal()
 // var x = d3.scale.linear()
 //     .range([0, width]);
 
+var superscript = "⁰¹²³⁴⁵",
+    formatPower = function(d) { return (d + "").split("").map(function(c) { return superscript[c]; }).join(""); };
+
 var x = d3.scale.log()
     .range([0, width]);
 
 var xAxis = d3.svg.axis()
     .scale(x)
-    .orient("top");
+    .orient("top")
+    .ticks(10, function(d) { return 10 + formatPower(Math.round(Math.log(d) / Math.LN10)); });
 
 var yAxis = d3.svg.axis()
     .scale(y)
     .orient("left");
     // .tickFormat(formatPercent);
 
-var file =["2010-04.tsv.new",
+var file =["datadata.tsv",
+"2010-04.tsv.new",
 "2010-05.tsv.new",
 "2010-06.tsv.new",
 "2010-07.tsv.new",
@@ -128,7 +133,6 @@ var file =["2010-04.tsv.new",
 "2011-11.tsv.new",
 "2011-12.tsv.new",
 "2012-01.tsv.new",
-"2012-02.tsv.new",
 "2012-03.tsv.new",
 "2012-04.tsv.new",
 "2012-05.tsv.new",
@@ -180,7 +184,7 @@ function drawB(h) {
       .attr('class', 'd3-tip')
       .offset([-10, 0])
       .html(function(d) {
-        return "<strong>Frequency:</strong> <span style='color:red'>" + d.frequency + "</span>";
+        return "<strong>Word : <span style='color:red'>" + d.letter + "</span> <br> <br> Frequency :</strong> <span style='color:red'>" + d.frequency + "</span>";
       });
 
 
@@ -191,7 +195,8 @@ function drawB(h) {
 
     d3.tsv(file[h-1], type, function(error, data) {
       // x.domain([0, d3.max(data, function(d) { return d.frequency; })]);
-      x.domain([1, 33000]);
+      // x.domain([1, 33000]);
+      x.domain([1e0, 1e5]);
       y.domain(data.map(function(d) { return d.letter; }));
 
       svg.append("g")
@@ -214,7 +219,7 @@ function drawB(h) {
         //   .style("text-anchor", "end")
           // .text("letter");
 
-      svg.selectAll(".bar")
+      var bar = svg.selectAll(".bar")
           .data(data)
         .enter().append("rect")
           .attr("class", "bar")
@@ -223,7 +228,14 @@ function drawB(h) {
           .attr("height", y.rangeBand())
           .attr("width", function(d) { if (d.frequency==0) { return 0; } else { return x(d.frequency); } })
           .on('mouseover', tip.show)
-          .on('mouseout', tip.hide)
+          .on('mouseout', tip.hide);
+
+          bar.transition();
+
+          bar.exit().transition()
+          .remove();
+
+
 
     });
 
@@ -251,13 +263,72 @@ function drawB(h) {
     update1(1);
     
     drawB(1);
+
+
     
 
     // update the elements
-    function update1(sliderval) {
+    function update1(m) {
+
+          var month =["total",
+          "2010-04",
+"2010-05",
+"2010-06",
+"2010-07",
+"2010-09",
+"2010-11",
+"2010-12",
+"2011-01",
+"2011-03",
+"2011-05",
+"2011-06",
+"2011-07",
+"2011-08",
+"2011-09",
+"2011-10",
+"2011-11",
+"2011-12",
+"2012-01",
+"2012-03",
+"2012-04",
+"2012-05",
+"2012-06",
+"2012-07",
+"2012-08",
+"2012-09",
+"2012-10",
+"2012-11",
+"2012-12",
+"2013-01",
+"2013-02",
+"2013-03",
+"2013-04",
+"2013-05",
+"2013-06",
+"2013-07",
+"2013-08",
+"2013-09",
+"2013-10",
+"2013-11",
+"2013-12",
+"2014-01",
+"2014-02",
+"2014-03",
+"2014-04",
+"2014-05",
+"2014-06",
+"2014-07",
+"2014-08",
+"2014-09",
+"2014-10",
+"2014-11",
+"2014-12",
+"2015-01",
+"2015-02",
+"2015-03"];
       // adjust the text on the range slider
-      d3.select("#slider1-value").text(sliderval);
-      d3.select("#slider1").property("value", sliderval);
+      d3.select("#slider1-value").text(month[m-1]);
+      d3.select("#slider1").property("value", m);
     }
     </script>
 
