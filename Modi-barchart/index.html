@@ -68,7 +68,7 @@ body {
       style="display: inline-block; width: 500px; text-align: right">
       MONTH = <span id="slider1-value">…</span>
     </label>
-    <input type="range" min="1" max="24" step="1" id="slider1">
+    <input type="range" min="1" max="56" step="1" id="slider1">
 </p>
 
 <script src="http://d3js.org/d3.v3.min.js"></script>
@@ -95,7 +95,10 @@ var y = d3.scale.ordinal()
 //         .range([0, width])
 //         .domain([0,24]);
 
-var x = d3.scale.linear()
+// var x = d3.scale.linear()
+//     .range([0, width]);
+
+var x = d3.scale.log()
     .range([0, width]);
 
 var xAxis = d3.svg.axis()
@@ -107,7 +110,62 @@ var yAxis = d3.svg.axis()
     .orient("left");
     // .tickFormat(formatPercent);
 
-var file =["data1.tsv","data2.tsv","data3.tsv","data4.tsv","data5.tsv","data6.tsv","data7.tsv","data8.tsv","data9.tsv","data10.tsv","data11.tsv","data12.tsv","data13.tsv","data14.tsv","data15.tsv","data16.tsv","data17.tsv","data18.tsv","data19.tsv","data20.tsv","data21.tsv","data22.tsv","data23.tsv","data24.tsv"];
+var file =["2010-04.tsv.new",
+"2010-05.tsv.new",
+"2010-06.tsv.new",
+"2010-07.tsv.new",
+"2010-09.tsv.new",
+"2010-11.tsv.new",
+"2010-12.tsv.new",
+"2011-01.tsv.new",
+"2011-03.tsv.new",
+"2011-05.tsv.new",
+"2011-06.tsv.new",
+"2011-07.tsv.new",
+"2011-08.tsv.new",
+"2011-09.tsv.new",
+"2011-10.tsv.new",
+"2011-11.tsv.new",
+"2011-12.tsv.new",
+"2012-01.tsv.new",
+"2012-02.tsv.new",
+"2012-03.tsv.new",
+"2012-04.tsv.new",
+"2012-05.tsv.new",
+"2012-06.tsv.new",
+"2012-07.tsv.new",
+"2012-08.tsv.new",
+"2012-09.tsv.new",
+"2012-10.tsv.new",
+"2012-11.tsv.new",
+"2012-12.tsv.new",
+"2013-01.tsv.new",
+"2013-02.tsv.new",
+"2013-03.tsv.new",
+"2013-04.tsv.new",
+"2013-05.tsv.new",
+"2013-06.tsv.new",
+"2013-07.tsv.new",
+"2013-08.tsv.new",
+"2013-09.tsv.new",
+"2013-10.tsv.new",
+"2013-11.tsv.new",
+"2013-12.tsv.new",
+"2014-01.tsv.new",
+"2014-02.tsv.new",
+"2014-03.tsv.new",
+"2014-04.tsv.new",
+"2014-05.tsv.new",
+"2014-06.tsv.new",
+"2014-07.tsv.new",
+"2014-08.tsv.new",
+"2014-09.tsv.new",
+"2014-10.tsv.new",
+"2014-11.tsv.new",
+"2014-12.tsv.new",
+"2015-01.tsv.new",
+"2015-02.tsv.new",
+"2015-03.tsv.new"];
 
 
 
@@ -132,7 +190,8 @@ function drawB(h) {
 
 
     d3.tsv(file[h-1], type, function(error, data) {
-      x.domain([5000, d3.max(data, function(d) { return d.frequency; })]);
+      // x.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+      x.domain([1, 33000]);
       y.domain(data.map(function(d) { return d.letter; }));
 
       svg.append("g")
@@ -162,7 +221,7 @@ function drawB(h) {
           .attr("x", function(d) { return 0; })
           .attr("y", function(d) { return y(d.letter); })
           .attr("height", y.rangeBand())
-          .attr("width", function(d) { return x(d.frequency); })
+          .attr("width", function(d) { if (d.frequency==0) { return 0; } else { return x(d.frequency); } })
           .on('mouseover', tip.show)
           .on('mouseout', tip.hide)
 
